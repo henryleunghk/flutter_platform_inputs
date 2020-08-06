@@ -15,14 +15,17 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    textView.text = @"";
-    textView.textColor = UIColor.blackColor;
+    if ([textView.text isEqualToString:_args[@"placeholder"]]) {
+        textView.text = @"";
+        textView.textColor = UIColor.blackColor;
+    }
     [_channel invokeMethod:@"textFieldDidBeginEditing"
                  arguments:nil];
 }
 
 - (void)textViewDidChange:(UITextView *)textView {
     textView.textColor = textView.text == 0 ? UIColor.lightTextColor : UIColor.blackColor;
+    [_channel invokeMethod:@"onChanged" arguments:@{ @"text" : textView.text }];
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {

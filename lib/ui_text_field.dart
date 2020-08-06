@@ -82,6 +82,8 @@ class UiTextField extends StatefulWidget {
     this.focusNode,
     this.textAlign = TextAlign.start,
     this.maxLines = 1,
+    this.minHeight = 36,
+    this.maxHeight = 36,
   }) : super(key: key);
 
   /// Controls the text being edited.
@@ -114,6 +116,10 @@ class UiTextField extends StatefulWidget {
 
   final int maxLines;
 
+  final double minHeight;
+
+  final double maxHeight;
+
   @override
   State<StatefulWidget> createState() => _UiTextFieldState();
 }
@@ -133,12 +139,14 @@ class _UiTextFieldState extends State<UiTextField> {
   void initState() {
     super.initState();
 
-    if (widget.focusNode != null) {
+    if (_effectiveFocusNode != null) {
       // TODO: remove listener
       // TODO: handle didUpdateWidget
-      widget.focusNode.addListener(() {
-        if (widget.focusNode.hasFocus) {
+      _effectiveFocusNode.addListener(() {
+        if (_effectiveFocusNode.hasFocus) {
           _channel.invokeMethod("focus");
+        } else {
+          _channel.invokeMethod("unfocus");
         }
       });
     }
@@ -156,7 +164,8 @@ class _UiTextFieldState extends State<UiTextField> {
   @override
   Widget build(BuildContext context) {
     return ConstrainedBox(
-      constraints: BoxConstraints(minHeight: 31, maxHeight: 31),
+      constraints: BoxConstraints(
+          minHeight: widget.minHeight, maxHeight: widget.maxHeight),
       child: UiKitView(
           viewType: "dev.gilder.tom/uitextfield",
           creationParamsCodec: const StandardMessageCodec(),

@@ -47,7 +47,9 @@
 }
 
 - (void)onMethodCall:(FlutterMethodCall*)call result:(FlutterResult)result {
-    if ([[call method] isEqualToString:@"focus"]) {
+    if ([[call method] isEqualToString:@"unfocus"]) {
+        [self onUnFocus:call result:result];
+    } else if ([[call method] isEqualToString:@"focus"]) {
         [self onFocus:call result:result];
     } else if ([[call method] isEqualToString:@"setText"]) {
         [self onSetText:call result:result];
@@ -61,6 +63,11 @@
     result(nil);
 }
 
+- (void)onUnFocus:(FlutterMethodCall*)call result:(FlutterResult)result {
+    [_textView resignFirstResponder];
+    result(nil);
+}
+
 - (void)onSetText:(FlutterMethodCall*)call result:(FlutterResult)result {
     _textView.text = call.arguments[@"text"];
     result(nil);
@@ -68,11 +75,6 @@
 
 - (UIView*)view {
     return _textView;
-}
-
-- (void)textFieldDidChange:(UITextField *)textField {
-    [_channel invokeMethod:@"onChanged"
-                 arguments:@{ @"text" : textField.text }];
 }
 
 - (UIKeyboardType)keyboardTypeFromString:(NSString*)keyboardType {
