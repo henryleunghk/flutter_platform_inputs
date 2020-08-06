@@ -15,7 +15,8 @@
 }
 
 - (void)textViewDidBeginEditing:(UITextView *)textView {
-    textView.textColor = textView.text == 0 ? UIColor.lightTextColor : UIColor.blackColor;
+    textView.text = @"";
+    textView.textColor = UIColor.blackColor;
     [_channel invokeMethod:@"textFieldDidBeginEditing"
                  arguments:nil];
 }
@@ -25,6 +26,10 @@
 }
 
 - (void)textViewDidEndEditing:(UITextView *)textView {
+    if (textView.text.length == 0) {
+        textView.text = _args[@"placeholder"];
+        textView.textColor = UIColor.lightGrayColor;
+    }
     [_channel invokeMethod:@"textFieldDidEndEditing"
                  arguments:@{ @"text": textView.text }];
 }

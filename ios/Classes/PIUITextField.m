@@ -22,7 +22,9 @@
         
         _textView = [[UITextView alloc] initWithFrame:frame];
         _textView.text = args[@"placeholder"];
-        _textView.textColor = UIColor.lightTextColor;
+        _textView.textColor = UIColor.lightGrayColor;
+        _textView.font = [UIFont systemFontOfSize:16];
+        _textView.backgroundColor = UIColor.clearColor;
         _textView.keyboardType = [self keyboardTypeFromString:args[@"keyboardType"]];
         _textView.secureTextEntry = [args[@"obsecureText"] boolValue];
         _textView.textAlignment = [self textAlignmentFromString:args[@"textAlign"]];
