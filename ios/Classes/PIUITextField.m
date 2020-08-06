@@ -2,7 +2,7 @@
 #import "PIUITextFieldDelegate.h"
 
 @implementation PIUITextField {
-    UITextField* _textField;
+    UITextView* _textView;
     int64_t _viewId;
     FlutterMethodChannel* _channel;
     PIUITextFieldDelegate* _delegate;
@@ -20,23 +20,21 @@
         
         _viewId = viewId;
         
-        _textField = [[UITextField alloc] initWithFrame:frame];
-        _textField.text = args[@"text"];
-        _textField.placeholder = args[@"placeholder"];
-        _textField.keyboardType = [self keyboardTypeFromString:args[@"keyboardType"]];
-        _textField.secureTextEntry = [args[@"obsecureText"] boolValue];
-        _textField.textAlignment = [self textAlignmentFromString:args[@"textAlign"]];
+        _textView = [[UITextView alloc] initWithFrame:frame];
+        _textView.text = args[@"placeholder"];
+        _textView.textColor = UIColor.lightTextColor;
+        _textView.keyboardType = [self keyboardTypeFromString:args[@"keyboardType"]];
+        _textView.secureTextEntry = [args[@"obsecureText"] boolValue];
+        _textView.textAlignment = [self textAlignmentFromString:args[@"textAlign"]];
+        _textView.textContainer.maximumNumberOfLines = [args[@"maxLines"] intValue];
+        _textView.textContainer.lineBreakMode = NSLineBreakByTruncatingTail;
         
         if (@available(iOS 10.0, *)) {
-            _textField.textContentType = [self textContentTypeFromString:args[@"textContentType"]];
+            _textView.textContentType = [self textContentTypeFromString:args[@"textContentType"]];
         }
         
-        _delegate = [[PIUITextFieldDelegate alloc] initWithChannel:_channel];
-        _textField.delegate = _delegate;
-        
-        [_textField addTarget:self
-                       action:@selector(textFieldDidChange:)
-             forControlEvents:UIControlEventEditingChanged];
+        _delegate = [[PIUITextFieldDelegate alloc] initWithChannel:_channel arguments:args];
+        _textView.delegate = _delegate;
         
         __weak __typeof__(self) weakSelf = self;
         [_channel setMethodCallHandler:^(FlutterMethodCall* call, FlutterResult result) {
@@ -57,17 +55,17 @@
 }
 
 - (void)onFocus:(FlutterMethodCall*)call result:(FlutterResult)result {
-    [_textField becomeFirstResponder];
+    [_textView becomeFirstResponder];
     result(nil);
 }
 
 - (void)onSetText:(FlutterMethodCall*)call result:(FlutterResult)result {
-    _textField.text = call.arguments[@"text"];
+    _textView.text = call.arguments[@"text"];
     result(nil);
 }
 
 - (UIView*)view {
-    return _textField;
+    return _textView;
 }
 
 - (void)textFieldDidChange:(UITextField *)textField {
@@ -220,7 +218,7 @@
 
 - (UIUserInterfaceLayoutDirection)layoutDirection {
     if (@available(iOS 9.0, *)) {
-        return [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:_textField.semanticContentAttribute];
+        return [UIView userInterfaceLayoutDirectionForSemanticContentAttribute:_textView.semanticContentAttribute];
     }
     
     return UIApplication.sharedApplication.userInterfaceLayoutDirection;

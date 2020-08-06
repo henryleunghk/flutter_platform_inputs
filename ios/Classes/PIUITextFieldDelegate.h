@@ -3,9 +3,9 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface PIUITextFieldDelegate : NSObject <UITextFieldDelegate>
+@interface PIUITextFieldDelegate : NSObject <UITextViewDelegate>
 
-- (instancetype)initWithChannel:(FlutterMethodChannel*)channel;
+- (instancetype)initWithChannel:(FlutterMethodChannel*)channel arguments:(id _Nullable)args;
 
 @end
 

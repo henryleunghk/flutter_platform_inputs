@@ -6,7 +6,8 @@ import 'package:platform_inputs/ui_text_field.dart';
 import 'ui_text_field_test_page.dart';
 
 class HomePage extends StatelessWidget {
-  final TextEditingController _controller = TextEditingController(text: "Initial Text");
+  final TextEditingController _controller =
+      TextEditingController(text: "Initial Text");
 
   final FocusNode _focusNode = FocusNode();
 
@@ -27,7 +28,8 @@ class HomePage extends StatelessWidget {
                   MaterialButton(
                       child: Text("UiTextField test page"),
                       onPressed: () {
-                        Navigator.of(context).push(MaterialPageRoute(builder: (_) => UiTextFieldTestPage()));
+                        Navigator.of(context).push(MaterialPageRoute(
+                            builder: (_) => UiTextFieldTestPage()));
                       }),
                   Header("TextField:"),
                   TextField(),

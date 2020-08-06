@@ -81,6 +81,7 @@ class UiTextField extends StatefulWidget {
     this.onSubmitted,
     this.focusNode,
     this.textAlign = TextAlign.start,
+    this.maxLines = 1,
   }) : super(key: key);
 
   /// Controls the text being edited.
@@ -111,6 +112,8 @@ class UiTextField extends StatefulWidget {
 
   final TextAlign textAlign;
 
+  final int maxLines;
+
   @override
   State<StatefulWidget> createState() => _UiTextFieldState();
 }
@@ -119,10 +122,12 @@ class _UiTextFieldState extends State<UiTextField> {
   MethodChannel _channel;
 
   TextEditingController _controller;
-  TextEditingController get _effectiveController => widget.controller ?? (_controller ??= TextEditingController());
+  TextEditingController get _effectiveController =>
+      widget.controller ?? (_controller ??= TextEditingController());
 
   FocusNode _focusNode;
-  FocusNode get _effectiveFocusNode => widget.focusNode ?? (_focusNode ??= FocusNode());
+  FocusNode get _effectiveFocusNode =>
+      widget.focusNode ?? (_focusNode ??= FocusNode());
 
   @override
   void initState() {
@@ -142,7 +147,8 @@ class _UiTextFieldState extends State<UiTextField> {
       // TODO: remove listener
       // TODO: handle didUpdateWidget
       widget.controller.addListener(() {
-        _channel.invokeMethod("setText", {"text": widget.controller.text ?? ""});
+        _channel
+            .invokeMethod("setText", {"text": widget.controller.text ?? ""});
       });
     }
   }
@@ -160,7 +166,8 @@ class _UiTextFieldState extends State<UiTextField> {
   }
 
   void _createMethodChannel(int nativeViewId) {
-    _channel = MethodChannel("dev.gilder.tom/uitextfield_$nativeViewId")..setMethodCallHandler(_onMethodCall);
+    _channel = MethodChannel("dev.gilder.tom/uitextfield_$nativeViewId")
+      ..setMethodCallHandler(_onMethodCall);
   }
 
   Map<String, dynamic> _buildCreationParams() {
@@ -170,7 +177,8 @@ class _UiTextFieldState extends State<UiTextField> {
       "textContentType": widget.textContentType?.toString(),
       "keyboardType": widget.keyboardType?.toString(),
       "obsecureText": widget.obsecureText,
-      "textAlign": widget.textAlign.toString()
+      "textAlign": widget.textAlign.toString(),
+      "maxLines": widget.maxLines,
     };
   }
 
@@ -191,7 +199,8 @@ class _UiTextFieldState extends State<UiTextField> {
         return null;
     }
 
-    throw MissingPluginException("UiTextField._onMethodCall: No handler for ${call.method}");
+    throw MissingPluginException(
+        "UiTextField._onMethodCall: No handler for ${call.method}");
   }
 
   void _onTextFieldChanged(String text) {
